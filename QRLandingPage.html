@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+<script>
+function getMobileOperatingSystem() {
+debugger;
+  var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
+      // Windows Phone must come first because its UA also contains "Android"
+    if (/windows phone/i.test(userAgent)) {
+        return "Windows Phone";
+    }
+
+    if (/android/i.test(userAgent)) {
+        return "Android";
+    }
+
+    // iOS detection from: http://stackoverflow.com/a/9039885/177710
+    if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+        return "iOS";
+    }
+
+    return "unknown";
+}
+</script>
+
+<script>
+function getUrlFromSerialNumber(uniqueId) {       
+    if (uniqueId == "123456")
+	{
+    	return "intent://#Intent;package=com.whatsapp;scheme=whatsapp;launchFlags=268435456;end;";
+	}
+    else if (uniqueId == "123457")
+	{
+		return "intent://#Intent;package=com.microsoft.office.outlook;scheme=outlook;launchFlags=268435456;end;";
+	}
+}
+
+function getQueryStringValue (key) {  
+  return decodeURIComponent(window.location.search.replace(new RegExp("^(?:.*[&\\?]" + encodeURIComponent(key).replace(/[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));  
+}
+
+function GetAndroidUrl(uniqueId) {
+	if (uniqueId == "123456")
+	{
+    	return "intent://#Intent;package=com.whatsapp;scheme=whatsapp;launchFlags=268435456;end;";
+	}
+    else if (uniqueId == "123457")
+	{
+		return "intent://#Intent;package=com.microsoft.office.outlook;scheme=outlook;launchFlags=268435456;end;";
+	}
+}
+
+function GetiOSUrl(uniqueId) {
+	if (uniqueId == "123456")
+	{
+    	return "http://itunes.apple.com/app/id310633997";
+	}
+    else if (uniqueId == "123457")
+	{
+		return "http://itunes.apple.com/app/id951937596";
+	}
+}
+
+function getLocation() {	
+  if (navigator.geolocation){
+        navigator.geolocation.getCurrentPosition(showPosition);
+    }
+}
+
+function showPosition(position){	
+    lat=position.coords.latitude;
+    lon=position.coords.longitude;
+
+    displayLocation(lat,lon);
+}
+
+function displayLocation(latitude,longitude){	
+	alert('Latitude = ' + latitude + ', Longitude = ' + longitude);    
+}
+
+function DetectAndServe(){
+debugger;
+	const uniqueId = getQueryStringValue("id");
+	
+    let os = getMobileOperatingSystem();
+    
+    let url = getUrlFromSerialNumber(uniqueId);
+	
+	//getLocation();
+
+    if (os == "Android") {
+        window.location.href = GetAndroidUrl(uniqueId); 
+    } else if (os == "iOS") {
+        window.location.href = GetiOSUrl(uniqueId);
+    } else if (os == "Windows Phone") {
+        window.location.href = url;
+    } else {
+        window.location.href = "https://web.whatsapp.com/";
+    }
+}
+
+</script>
+</head>
+<body onload="DetectAndServe()">
+</body>
+</html>
